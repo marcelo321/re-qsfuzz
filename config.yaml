@@ -1,0 +1,17 @@
+rules:
+  XssDetection:
+    description: Test for XSS by discovering potentially unsanitized/encoded input in responses
+    injections:
+      - '<u>fuzz</u>'
+      - "abc:defg[[domain]]"
+      - 'z1z1"+zz'
+      - "z1z1'zz"
+    expectation:
+      responseContents:
+        - '<u>fuzz</u>'
+        - "'z1z1'zz"
+        - '"z1z1"zz'
+        - "href='abc:defg"
+        - 'href="abc:defg'
+      responseHeaders:
+        Content-Type: html
